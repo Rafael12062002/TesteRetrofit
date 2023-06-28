@@ -11,6 +11,6 @@ import retrofit2.http.POST;
 public interface BancoService {
 
     @POST("estudo1/ApiInserirUsuario.php")
-    Call<ResponseBody> inserirUsuario(@Body RequestBody requestBody);
+    Call<ResponseBody> inserirUsuario(@Header("Authorization") String authorizationHeader, @Body RequestBody requestBody);
 
 }

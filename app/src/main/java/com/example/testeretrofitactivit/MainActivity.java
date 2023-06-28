@@ -31,19 +31,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText editTextNome;
+    private EditText editTextEmail;
     private EditText editTextSenha;
     private Button entrar;
     private Retrofit retrofit;
     private String token = "123";
-    private String URL = "http://10.0.0.242/";
+    private String URL = "http://192.168.0.105/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(60, TimeUnit.SECONDS) // Aumente o tempo limite para 60 segundos
+                .connectTimeout(30, TimeUnit.SECONDS) // Aumente o tempo limite para 60 segundos
                 .build();
 
         Gson gson = new GsonBuilder()
@@ -59,10 +59,9 @@ public class MainActivity extends AppCompatActivity {
         inicializarComponetes();
 
         entrar.setOnClickListener(view -> {
-            if (editTextNome.getText().toString().equals("") || editTextSenha.getText().toString().equals("")) {
+            if (editTextEmail.getText().toString().equals("") || editTextSenha.getText().toString().equals("")) {
                 Toast.makeText(getApplicationContext(), "Digite em todos os campos", Toast.LENGTH_SHORT).show();
             }else{
-
                 cadastrarCliente();
             }
         });
@@ -70,19 +69,19 @@ public class MainActivity extends AppCompatActivity {
 
     public void cadastrarCliente(){
         BancoService service = retrofit.create(BancoService.class);
-        String nome = editTextNome.getText().toString();
+        String nome = editTextEmail.getText().toString();
         String senha = editTextSenha.getText().toString();
 
+
         Usuario u = new Usuario();
-        u.setNome(nome);
+        u.setEmail(nome);
         u.setSenha(senha);
 
         // Criar um objeto JSON para enviar os dados
         JSONObject jsonBody = new JSONObject();
         try {
-            jsonBody.put("Email", u.getNome());
-            jsonBody.put("Senha", u.getSenha());
-            jsonBody.put("Authorization", token);
+            jsonBody.put("Email",u.getEmail());
+            jsonBody.put("Senha",u.getSenha());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -98,7 +97,9 @@ public class MainActivity extends AppCompatActivity {
         String authorizationHeader = "Bearer " + token; // Adicione "Bearer " antes do token
         okhttp3.Headers headers = okhttp3.Headers.of("Authorization", authorizationHeader);*/
 
-        Call<ResponseBody> call = service.inserirUsuario(body);
+        String authorizationHeader = "Bearer " + token; // Adicione "Bearer " antes do token
+
+        Call<ResponseBody> call = service.inserirUsuario(authorizationHeader, body);
 
         call.enqueue(new Callback<ResponseBody>() {
             @Override
@@ -111,14 +112,8 @@ public class MainActivity extends AppCompatActivity {
                     if (statusCode == 200){
                         ResponseBody responseBody = response.body();
                         if (responseBody != null){
-                            try {
-                                // Fazer o parse dos dados JSON utilizando Gson
-                                Gson gson = new Gson();
-
-                                Usuario usuario = gson.fromJson(responseBody.charStream(), Usuario.class);
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }
+                            Log.d("n", responseBody.toString());
+                            Log.d("m", requestBody);
                         }
                     }
                 } else {
@@ -168,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void inicializarComponetes(){
         entrar = findViewById(R.id.buttonCadastrar);
-        editTextNome = findViewById(R.id.editTextNome);
+        editTextEmail = findViewById(R.id.editTextEmail);
         editTextSenha = findViewById(R.id.editTextSenha);
     }
 }

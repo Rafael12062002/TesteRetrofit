@@ -5,9 +5,25 @@ import java.io.Serializable;
 public class Usuario implements Serializable {
 
 
-    private String nome;
-    private String senha;
+    private String Email;
+    private String Senha;
     private long id;
+
+    public String getEmail() {
+        return Email;
+    }
+
+    public void setEmail(String email) {
+        Email = email;
+    }
+
+    public String getSenha() {
+        return Senha;
+    }
+
+    public void setSenha(String senha) {
+        Senha = senha;
+    }
 
     public long getId() {
         return id;
@@ -15,21 +31,5 @@ public class Usuario implements Serializable {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
     }
 }
